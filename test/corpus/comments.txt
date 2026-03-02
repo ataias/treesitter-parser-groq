@@ -1,0 +1,29 @@
+====================
+Line comment
+====================
+
+// this is a comment
+*
+
+---
+
+(source_file
+  (comment)
+  (everything))
+
+====================
+Inline comment
+====================
+
+*[_type == "movie"] // filter by type
+
+---
+
+(source_file
+  (postfix_expression
+    (everything)
+    (subscript
+      (equality_expression
+        (identifier)
+        (string))))
+  (comment))

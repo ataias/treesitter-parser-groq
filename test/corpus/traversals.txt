@@ -1,0 +1,197 @@
+====================
+Attribute access
+====================
+
+user.name
+
+---
+
+(source_file
+  (postfix_expression
+    (identifier)
+    (attribute_access
+      (identifier))))
+
+====================
+Chained attribute access
+====================
+
+user.address.city
+
+---
+
+(source_file
+  (postfix_expression
+    (postfix_expression
+      (identifier)
+      (attribute_access
+        (identifier)))
+    (attribute_access
+      (identifier))))
+
+====================
+Subscript (filter/element)
+====================
+
+arr[0]
+
+---
+
+(source_file
+  (postfix_expression
+    (identifier)
+    (subscript
+      (number))))
+
+====================
+Array postfix
+====================
+
+items[]
+
+---
+
+(source_file
+  (postfix_expression
+    (identifier)
+    (array_postfix)))
+
+====================
+Inclusive slice
+====================
+
+arr[0..5]
+
+---
+
+(source_file
+  (postfix_expression
+    (identifier)
+    (subscript
+      (number)
+      (number))))
+
+====================
+Exclusive slice
+====================
+
+arr[0...5]
+
+---
+
+(source_file
+  (postfix_expression
+    (identifier)
+    (subscript
+      (number)
+      (number))))
+
+====================
+Dereference
+====================
+
+author->
+
+---
+
+(source_file
+  (postfix_expression
+    (identifier)
+    (dereference)))
+
+====================
+Dereference with attribute
+====================
+
+author->name
+
+---
+
+(source_file
+  (postfix_expression
+    (identifier)
+    (dereference
+      (identifier))))
+
+====================
+Projection
+====================
+
+doc{title, body}
+
+---
+
+(source_file
+  (postfix_expression
+    (identifier)
+    (projection
+      (identifier)
+      (identifier))))
+
+====================
+Projection with alias
+====================
+
+doc{"label": title}
+
+---
+
+(source_file
+  (postfix_expression
+    (identifier)
+    (projection
+      (alias_entry
+        key: (string)
+        value: (identifier)))))
+
+====================
+Projection with spread
+====================
+
+doc{..., "extra": computed}
+
+---
+
+(source_file
+  (postfix_expression
+    (identifier)
+    (projection
+      (spread)
+      (alias_entry
+        key: (string)
+        value: (identifier)))))
+
+====================
+Everything with filter
+====================
+
+*[_type == "movie"]
+
+---
+
+(source_file
+  (postfix_expression
+    (everything)
+    (subscript
+      (equality_expression
+        (identifier)
+        (string)))))
+
+====================
+Chained traversals
+====================
+
+castMembers[].person->name
+
+---
+
+(source_file
+  (postfix_expression
+    (postfix_expression
+      (postfix_expression
+        (identifier)
+        (array_postfix))
+      (attribute_access
+        (identifier)))
+    (dereference
+      (identifier))))

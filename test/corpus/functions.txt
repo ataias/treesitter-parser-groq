@@ -1,0 +1,107 @@
+====================
+Simple function call
+====================
+
+count(items)
+
+---
+
+(source_file
+  (function_call
+    name: (identifier)
+    (identifier)))
+
+====================
+Function with no arguments
+====================
+
+now()
+
+---
+
+(source_file
+  (function_call
+    name: (identifier)))
+
+====================
+Function with multiple arguments
+====================
+
+coalesce(a, b, c)
+
+---
+
+(source_file
+  (function_call
+    name: (identifier)
+    (identifier)
+    (identifier)
+    (identifier)))
+
+====================
+Namespaced function
+====================
+
+array::join(tags, ", ")
+
+---
+
+(source_file
+  (function_call
+    name: (namespaced_identifier
+      namespace: (identifier)
+      name: (identifier))
+    (identifier)
+    (string)))
+
+====================
+Nested function call
+====================
+
+dateTime(now())
+
+---
+
+(source_file
+  (function_call
+    name: (identifier)
+    (function_call
+      name: (identifier))))
+
+====================
+Math namespace
+====================
+
+math::sum(prices)
+
+---
+
+(source_file
+  (function_call
+    name: (namespaced_identifier
+      namespace: (identifier)
+      name: (identifier))
+    (identifier)))
+
+====================
+Select with pairs
+====================
+
+select(popularity > 20 => "high", popularity > 10 => "medium", "low")
+
+---
+
+(source_file
+  (function_call
+    name: (identifier)
+    (pair
+      (comparison_expression
+        (identifier)
+        (number))
+      (string))
+    (pair
+      (comparison_expression
+        (identifier)
+        (number))
+      (string))
+    (string)))

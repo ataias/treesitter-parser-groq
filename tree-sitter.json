@@ -1,0 +1,42 @@
+{
+  "$schema": "https://tree-sitter.github.io/tree-sitter/assets/schemas/config.schema.json",
+  "grammars": [
+    {
+      "name": "groq",
+      "camelcase": "Groq",
+      "title": "Groq",
+      "scope": "source.groq",
+      "file-types": [
+        "groq"
+      ],
+      "injection-regex": "^groq$",
+      "class-name": "TreeSitterGroq"
+    }
+  ],
+  "metadata": {
+    "version": "0.1.0",
+    "license": "MIT",
+    "description": "Groq grammar for tree-sitter",
+    "authors": [
+      {
+        "name": "Ataias Reis",
+        "email": "ataiasreis@gmail.com",
+        "url": "https://github.com/ataias"
+      }
+    ],
+    "links": {
+      "repository": "https://github.com/ataias/treesitter-parser-groq",
+      "funding": "https://github.com/sponsors/ataias"
+    }
+  },
+  "bindings": {
+    "c": true,
+    "go": true,
+    "java": false,
+    "node": true,
+    "python": true,
+    "rust": true,
+    "swift": true,
+    "zig": true
+  }
+}

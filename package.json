@@ -1,0 +1,28 @@
+{
+  "name": "tree-sitter-groq",
+  "version": "0.1.0",
+  "description": "Groq grammar for tree-sitter",
+  "type": "module",
+  "main": "bindings/node",
+  "scripts": {
+    "install": "node-gyp-build",
+    "build:prod": "tree-sitter generate && bunx node-gyp rebuild",
+    "build:dev": "tree-sitter generate",
+    "lint": "bunx biome check grammar.js",
+    "lint:fix": "bunx biome check --write grammar.js",
+    "format": "bunx biome format --write grammar.js",
+    "start": "nodemon --exec 'bun run build:prod' --watch grammar.js",
+    "parse": "tree-sitter parse",
+    "test": "tree-sitter test"
+  },
+  "author": "Ataias Reis",
+  "license": "MIT",
+  "dependencies": {
+    "node-addon-api": "^8.0.0",
+    "node-gyp-build": "^4.8.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.4.4",
+    "tree-sitter-cli": "^0.26.6"
+  }
+}

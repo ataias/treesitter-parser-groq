@@ -1,0 +1,6 @@
+// Analytics aggregation with date filtering
+*[_type == "event" && dateTime(timestamp) > dateTime($startDate) && dateTime(timestamp) < dateTime($endDate)]{
+  "date": string::split(timestamp, "T")[0],
+  type,
+  userId
+} | order(timestamp asc)

@@ -1,0 +1,191 @@
+====================
+Null literal
+====================
+
+null
+
+---
+
+(source_file
+  (null))
+
+====================
+Boolean true
+====================
+
+true
+
+---
+
+(source_file
+  (true))
+
+====================
+Boolean false
+====================
+
+false
+
+---
+
+(source_file
+  (false))
+
+====================
+Integer number
+====================
+
+42
+
+---
+
+(source_file
+  (number))
+
+====================
+Decimal number
+====================
+
+3.14
+
+---
+
+(source_file
+  (number))
+
+====================
+Scientific notation
+====================
+
+1e10
+
+---
+
+(source_file
+  (number))
+
+====================
+Scientific notation with decimal and sign
+====================
+
+2.5E-3
+
+---
+
+(source_file
+  (number))
+
+====================
+Double quoted string
+====================
+
+"hello world"
+
+---
+
+(source_file
+  (string))
+
+====================
+Single quoted string
+====================
+
+'hello world'
+
+---
+
+(source_file
+  (string))
+
+====================
+String with escape sequences
+====================
+
+"line1\nline2\t\"quoted\""
+
+---
+
+(source_file
+  (string
+    (escape_sequence)
+    (escape_sequence)
+    (escape_sequence)
+    (escape_sequence)))
+
+====================
+String with unicode escape
+====================
+
+"\u0041\u{1F600}"
+
+---
+
+(source_file
+  (string
+    (escape_sequence)
+    (escape_sequence)))
+
+====================
+Empty array
+====================
+
+[]
+
+---
+
+(source_file
+  (array))
+
+====================
+Array with elements
+====================
+
+[1, "two", true, null]
+
+---
+
+(source_file
+  (array
+    (number)
+    (string)
+    (true)
+    (null)))
+
+====================
+Array with trailing comma
+====================
+
+[1, 2,]
+
+---
+
+(source_file
+  (array
+    (number)
+    (number)))
+
+====================
+Object literal
+====================
+
+{"name": "Alice", "age": 30}
+
+---
+
+(source_file
+  (object
+    key: (string)
+    value: (string)
+    key: (string)
+    value: (number)))
+
+====================
+Empty object
+====================
+
+{}
+
+---
+
+(source_file
+  (object))

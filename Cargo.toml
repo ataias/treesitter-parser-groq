@@ -1,0 +1,29 @@
+[package]
+name = "tree-sitter-groq"
+description = "groq grammar for the tree-sitter parsing library"
+version = "0.1.0"
+keywords = ["incremental", "parsing", "groq"]
+categories = ["parsing", "text-editors"]
+repository = "https://github.com/ataias/treesitter-parser-groq"
+edition = "2021"
+license = "MIT"
+
+build = "bindings/rust/build.rs"
+include = [
+  "bindings/rust/*",
+  "grammar.js",
+  "queries/*",
+  "src/*",
+]
+
+[lib]
+path = "bindings/rust/lib.rs"
+
+[dependencies]
+tree-sitter-language = "0.1"
+
+[dev-dependencies]
+tree-sitter = "0.25"
+
+[build-dependencies]
+cc = "1.2"

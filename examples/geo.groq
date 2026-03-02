@@ -1,0 +1,7 @@
+// Geo query: find nearby stores
+*[_type == "store" && geo::distance(location, geo::latLng($lat, $lng)) < $radiusMeters]{
+  name,
+  address,
+  "distance": geo::distance(location, geo::latLng($lat, $lng)),
+  "hours": openingHours[dayOfWeek == $today]{open, close}
+} | order(geo::distance(location, geo::latLng($lat, $lng)) asc)[0..9]

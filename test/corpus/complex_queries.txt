@@ -1,0 +1,174 @@
+====================
+Filter with projection and nested dereference
+====================
+
+*[_type == "movie"]{title, "director": director->name, releaseDate}
+
+---
+
+(source_file
+  (postfix_expression
+    (postfix_expression
+      (everything)
+      (subscript
+        (equality_expression
+          (identifier)
+          (string))))
+    (projection
+      (identifier)
+      (alias_entry
+        key: (string)
+        value: (postfix_expression
+          (identifier)
+          (dereference
+            (identifier))))
+      (identifier))))
+
+====================
+Nested query with parent reference
+====================
+
+*[_type == "person"]{name, "movies": *[_type == "movie" && references(^._id)]{title}}
+
+---
+
+(source_file
+  (postfix_expression
+    (postfix_expression
+      (everything)
+      (subscript
+        (equality_expression
+          (identifier)
+          (string))))
+    (projection
+      (identifier)
+      (alias_entry
+        key: (string)
+        value: (postfix_expression
+          (postfix_expression
+            (everything)
+            (subscript
+              (and_expression
+                (equality_expression
+                  (identifier)
+                  (string))
+                (function_call
+                  name: (identifier)
+                  (postfix_expression
+                    (parent)
+                    (attribute_access
+                      (identifier)))))))
+          (projection
+            (identifier)))))))
+
+====================
+Order with slice and function
+====================
+
+*[_type == "movie"] | order(lower(title) asc)[0..9]
+
+---
+
+(source_file
+  (postfix_expression
+    (postfix_expression
+      (postfix_expression
+        (everything)
+        (subscript
+          (equality_expression
+            (identifier)
+            (string))))
+      (pipe_call
+        (function_call
+          name: (identifier)
+          (sort_expression
+            (function_call
+              name: (identifier)
+              (identifier))))))
+    (subscript
+      (number)
+      (number))))
+
+====================
+Complex filter with multiple conditions and functions
+====================
+
+*[_type == "movie" && releaseDate > "2016-04-25" && defined(poster) && count(castMembers) > 3]
+
+---
+
+(source_file
+  (postfix_expression
+    (everything)
+    (subscript
+      (and_expression
+        (and_expression
+          (and_expression
+            (equality_expression
+              (identifier)
+              (string))
+            (comparison_expression
+              (identifier)
+              (string)))
+          (function_call
+            name: (identifier)
+            (identifier)))
+        (comparison_expression
+          (function_call
+            name: (identifier)
+            (identifier))
+          (number))))))
+
+====================
+Arithmetic in query
+====================
+
+dateTime(_updatedAt) > dateTime(now()) - 60*60*24*7
+
+---
+
+(source_file
+  (comparison_expression
+    (function_call
+      name: (identifier)
+      (identifier))
+    (addition_expression
+      (function_call
+        name: (identifier)
+        (function_call
+          name: (identifier)))
+      (multiplication_expression
+        (multiplication_expression
+          (multiplication_expression
+            (number)
+            (number))
+          (number))
+        (number)))))
+
+====================
+Using parameters in slice
+====================
+
+*[_type == "movie"] | order(_createdAt asc) [$start..$end]
+
+---
+
+(source_file
+  (postfix_expression
+    (postfix_expression
+      (postfix_expression
+        (everything)
+        (subscript
+          (equality_expression
+            (identifier)
+            (string))))
+      (pipe_call
+        (function_call
+          name: (identifier)
+          (sort_expression
+            (identifier)))))
+    (subscript
+      (parameter
+        (identifier))
+      (parameter
+        (identifier)))))

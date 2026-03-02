@@ -1,0 +1,72 @@
+====================
+Pipe with order
+====================
+
+*[_type == "movie"] | order(_createdAt asc)
+
+---
+
+(source_file
+  (postfix_expression
+    (postfix_expression
+      (everything)
+      (subscript
+        (equality_expression
+          (identifier)
+          (string))))
+    (pipe_call
+      (function_call
+        name: (identifier)
+        (sort_expression
+          (identifier))))))
+
+====================
+Chained pipes
+====================
+
+*[_type == "movie"] | order(releaseDate desc) | order(_createdAt asc)
+
+---
+
+(source_file
+  (postfix_expression
+    (postfix_expression
+      (postfix_expression
+        (everything)
+        (subscript
+          (equality_expression
+            (identifier)
+            (string))))
+      (pipe_call
+        (function_call
+          name: (identifier)
+          (sort_expression
+            (identifier)))))
+    (pipe_call
+      (function_call
+        name: (identifier)
+        (sort_expression
+          (identifier))))))
+
+====================
+Pipe with score
+====================
+
+*[_type == "post"] | score(title match "groq")
+
+---
+
+(source_file
+  (postfix_expression
+    (postfix_expression
+      (everything)
+      (subscript
+        (equality_expression
+          (identifier)
+          (string))))
+    (pipe_call
+      (function_call
+        name: (identifier)
+        (match_expression
+          (identifier)
+          (string))))))

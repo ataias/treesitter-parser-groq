@@ -1,0 +1,17 @@
+// Full-text search with scoring and boosting
+*[_type in ["post", "page", "product"]] | score(
+  title match $query,
+  boost(body match $query, 0.5),
+  boost(_type == "product" && popularity > 100, 3),
+  boost(defined(featuredImage), 1.5)
+) | order(_score desc) {
+  _type,
+  _score,
+  title,
+  "url": select(
+    _type == "post" => "/blog/" + slug.current,
+    _type == "page" => "/" + slug.current,
+    _type == "product" => "/shop/" + slug.current
+  ),
+  "snippet": pt::text(body)[0..150] + "..."
+}[0..19]

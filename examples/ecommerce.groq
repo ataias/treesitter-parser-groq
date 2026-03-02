@@ -1,0 +1,14 @@
+// Product listing with variants and pricing
+*[_type == "product" && defined(variants) && count(variants) > 0]{
+  title,
+  "slug": slug.current,
+  "price": math::min(variants[].price),
+  "maxPrice": math::max(variants[].price),
+  "available": count(variants[inStock == true]) > 0,
+  "images": images[]{
+    "url": asset->url,
+    "alt": alt
+  },
+  "category": category->{title, "slug": slug.current},
+  "tags": array::unique(variants[].tags[])
+} | order(title asc)

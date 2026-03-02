@@ -1,0 +1,13 @@
+// Fetch all published blog posts with author info
+*[_type == "post" && !(_id in path("drafts.**"))]{
+  title,
+  slug,
+  publishedAt,
+  "excerpt": pt::text(body)[0..200],
+  "author": author->{
+    name,
+    "avatar": image.asset->url
+  },
+  "categories": categories[]->{ title, slug },
+  "commentCount": count(*[_type == "comment" && references(^._id)])
+} | order(publishedAt desc)[0..9]
