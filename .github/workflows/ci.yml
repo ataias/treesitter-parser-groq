@@ -1,0 +1,135 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: "0 6 * * *"
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: oven-sh/setup-bun@v2
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+      - run: bun install
+      - run: bun run build:dev
+      - run: bun run test
+      - uses: actions/upload-artifact@v7
+        with:
+          name: generated-src
+          path: src/
+
+  test-c:
+    needs: generate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/download-artifact@v8
+        with:
+          name: generated-src
+          path: src/
+      - run: make
+
+  test-go:
+    needs: generate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/download-artifact@v8
+        with:
+          name: generated-src
+          path: src/
+      - uses: actions/setup-go@v6
+        with:
+          go-version: "1.22"
+          cache: false
+      - run: go mod tidy
+      - run: go test ./bindings/go/
+
+  test-node:
+    needs: generate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/download-artifact@v8
+        with:
+          name: generated-src
+          path: src/
+      - uses: oven-sh/setup-bun@v2
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+      - run: bun install
+      - run: bun add tree-sitter
+      - run: bunx node-gyp rebuild
+      - run: node --test bindings/node/binding_test.js
+
+  test-python:
+    needs: generate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/download-artifact@v8
+        with:
+          name: generated-src
+          path: src/
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install -e ".[core]" pytest
+      - run: python -m pytest bindings/python/tests/test_binding.py
+
+  test-rust:
+    needs: generate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/download-artifact@v8
+        with:
+          name: generated-src
+          path: src/
+      - run: cargo test
+
+  test-swift:
+    needs: generate
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/download-artifact@v8
+        with:
+          name: generated-src
+          path: src/
+      - if: runner.os == 'Linux'
+        uses: swift-actions/setup-swift@v2
+      - run: swift test
+
+  test-zig:
+    needs: generate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/download-artifact@v8
+        with:
+          name: generated-src
+          path: src/
+      - uses: mlugg/setup-zig@v2
+        with:
+          version: 0.15.2
+      - run: zig build test
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install
+      - run: bun run lint

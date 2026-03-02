@@ -20,12 +20,12 @@ pub fn build(b: *std.Build) !void {
         }),
     });
 
-    lib.addCSourceFile(.{
+    lib.root_module.addCSourceFile(.{
         .file = b.path("src/parser.c"),
         .flags = &.{"-std=c11"},
     });
     if (fileExists(b, "src/scanner.c")) {
-        lib.addCSourceFile(.{
+        lib.root_module.addCSourceFile(.{
             .file = b.path("src/scanner.c"),
             .flags = &.{"-std=c11"},
         });
@@ -38,7 +38,7 @@ pub fn build(b: *std.Build) !void {
         lib.root_module.addCMacro("TREE_SITTER_DEBUG", "");
     }
 
-    lib.addIncludePath(b.path("src"));
+    lib.root_module.addIncludePath(b.path("src"));
 
     b.installArtifact(lib);
     b.installFile("src/node-types.json", "node-types.json");
@@ -75,7 +75,7 @@ pub fn build(b: *std.Build) !void {
         while (args.next()) |a| {
             if (std.mem.eql(u8, a, "test")) {
                 const ts_dep = b.lazyDependency("tree_sitter", .{}) orelse continue;
-                tests.root_module.addImport("tree-sitter", ts_dep.module("tree-sitter"));
+                tests.root_module.addImport("tree-sitter", ts_dep.module("tree_sitter"));
                 break;
             }
         }
