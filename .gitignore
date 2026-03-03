@@ -3,6 +3,7 @@ build/
 prebuilds/
 node_modules/
 .build/
+Package.resolved
 _obj/
 .venv/
 dist/
