@@ -1,5 +1,8 @@
+; https://spec.groq.dev/GROQ-1.revision4/
+
 ====================
 Attribute access
+; https://spec.groq.dev/GROQ-1.revision4/#sec-Attribute-access-traversal
 ====================
 
 user.name
@@ -14,6 +17,7 @@ user.name
 
 ====================
 Chained attribute access
+; https://spec.groq.dev/GROQ-1.revision4/#sec-Attribute-access-traversal
 ====================
 
 user.address.city
@@ -31,6 +35,7 @@ user.address.city
 
 ====================
 Subscript (filter/element)
+; https://spec.groq.dev/GROQ-1.revision4/#sec-Element-access-traversal
 ====================
 
 arr[0]
@@ -45,6 +50,7 @@ arr[0]
 
 ====================
 Array postfix
+; https://spec.groq.dev/GROQ-1.revision4/#sec-Array-postfix-traversal
 ====================
 
 items[]
@@ -58,6 +64,7 @@ items[]
 
 ====================
 Inclusive slice
+; https://spec.groq.dev/GROQ-1.revision4/#sec-Slice-traversal
 ====================
 
 arr[0..5]
@@ -68,11 +75,13 @@ arr[0..5]
   (postfix_expression
     (identifier)
     (subscript
-      (number)
-      (number))))
+      (range_expression
+        (number)
+        (number)))))
 
 ====================
 Exclusive slice
+; https://spec.groq.dev/GROQ-1.revision4/#sec-Slice-traversal
 ====================
 
 arr[0...5]
@@ -83,11 +92,13 @@ arr[0...5]
   (postfix_expression
     (identifier)
     (subscript
-      (number)
-      (number))))
+      (range_expression
+        (number)
+        (number)))))
 
 ====================
 Dereference
+; https://spec.groq.dev/GROQ-1.revision4/#sec-Dereference-traversal
 ====================
 
 author->
@@ -101,6 +112,7 @@ author->
 
 ====================
 Dereference with attribute
+; https://spec.groq.dev/GROQ-1.revision4/#sec-Dereference-traversal
 ====================
 
 author->name
@@ -115,6 +127,7 @@ author->name
 
 ====================
 Projection
+; https://spec.groq.dev/GROQ-1.revision4/#sec-Projection-traversal
 ====================
 
 doc{title, body}
@@ -130,6 +143,7 @@ doc{title, body}
 
 ====================
 Projection with alias
+; https://spec.groq.dev/GROQ-1.revision4/#sec-Projection-traversal
 ====================
 
 doc{"label": title}
@@ -146,6 +160,7 @@ doc{"label": title}
 
 ====================
 Projection with spread
+; https://spec.groq.dev/GROQ-1.revision4/#sec-Projection-traversal
 ====================
 
 doc{..., "extra": computed}
@@ -162,7 +177,28 @@ doc{..., "extra": computed}
         value: (identifier)))))
 
 ====================
+Projection with optional | prefix
+; https://spec.groq.dev/GROQ-1.revision4/#sec-Projection-traversal
+====================
+
+*[_type == "post"] | {title}
+
+---
+
+(source_file
+  (postfix_expression
+    (postfix_expression
+      (everything)
+      (subscript
+        (comparison_expression
+          (identifier)
+          (string))))
+    (projection
+      (identifier))))
+
+====================
 Everything with filter
+; https://spec.groq.dev/GROQ-1.revision4/#sec-Filter-traversal
 ====================
 
 *[_type == "movie"]
@@ -173,7 +209,7 @@ Everything with filter
   (postfix_expression
     (everything)
     (subscript
-      (equality_expression
+      (comparison_expression
         (identifier)
         (string)))))
 

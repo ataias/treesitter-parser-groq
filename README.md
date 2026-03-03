@@ -4,7 +4,7 @@
 > handle every edge case yet. Bug reports and contributions are welcome.
 
 A [Tree-sitter](https://tree-sitter.github.io/) grammar for
-[GROQ](https://www.sanity.io/docs/groq) (Graph-Relational Object Queries),
+[GROQ](https://spec.groq.dev/GROQ-1.revision4/) (Graph-Relational Object Queries),
 Sanity.io's query language.
 
 ## Features
@@ -80,7 +80,8 @@ let tree = parser.parse("*[_type == \"movie\"]{title}", None).unwrap();
 
 ## References
 
-- [GROQ specification](https://www.sanity.io/docs/groq)
+- [GROQ specification (GROQ-1.revision4)](https://spec.groq.dev/GROQ-1.revision4/)
+- [GROQ specification source](https://github.com/sanity-io/groq)
 - [GROQ cheat sheet](https://www.sanity.io/docs/query-cheat-sheet)
 - [Tree-sitter documentation](https://tree-sitter.github.io/tree-sitter/)
 

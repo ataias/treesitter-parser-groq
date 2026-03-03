@@ -1,0 +1,457 @@
+; https://spec.groq.dev/GROQ-1.revision4/
+
+====================
+Parenthesized expression
+; https://spec.groq.dev/GROQ-1.revision4/#sec-Parenthesis-expression
+====================
+
+(1 + 2)
+
+---
+
+(source_file
+  (parenthesized_expression
+    (addition_expression
+      (number)
+      (number))))
+
+====================
+Logical OR
+; https://spec.groq.dev/GROQ-1.revision4/#sec-Or-operator
+====================
+
+a || b
+
+---
+
+(source_file
+  (or_expression
+    (identifier)
+    (identifier)))
+
+====================
+Logical AND
+; https://spec.groq.dev/GROQ-1.revision4/#sec-And-operator
+====================
+
+a && b
+
+---
+
+(source_file
+  (and_expression
+    (identifier)
+    (identifier)))
+
+====================
+Logical NOT
+; https://spec.groq.dev/GROQ-1.revision4/#sec-Not-operator
+====================
+
+!a
+
+---
+
+(source_file
+  (not_expression
+    (identifier)))
+
+====================
+Equality
+; https://spec.groq.dev/GROQ-1.revision4/#sec-Equality
+====================
+
+a == b
+
+---
+
+(source_file
+  (comparison_expression
+    (identifier)
+    (identifier)))
+
+====================
+Inequality
+; https://spec.groq.dev/GROQ-1.revision4/#sec-Equality
+====================
+
+a != b
+
+---
+
+(source_file
+  (comparison_expression
+    (identifier)
+    (identifier)))
+
+====================
+Comparison operators
+; https://spec.groq.dev/GROQ-1.revision4/#sec-Comparison-operators
+====================
+
+a >= b
+
+---
+
+(source_file
+  (comparison_expression
+    (identifier)
+    (identifier)))
+
+====================
+In expression
+; https://spec.groq.dev/GROQ-1.revision4/#sec-In-operator
+====================
+
+x in y
+
+---
+
+(source_file
+  (comparison_expression
+    (identifier)
+    (identifier)))
+
+====================
+Match expression
+; https://spec.groq.dev/GROQ-1.revision4/#sec-Match-operator
+====================
+
+title match "hello*"
+
+---
+
+(source_file
+  (comparison_expression
+    (identifier)
+    (string)))
+
+====================
+Addition
+; https://spec.groq.dev/GROQ-1.revision4/#sec-Binary-plus-operator
+====================
+
+a + b
+
+---
+
+(source_file
+  (addition_expression
+    (identifier)
+    (identifier)))
+
+====================
+Subtraction
+; https://spec.groq.dev/GROQ-1.revision4/#sec-Binary-minus-operator
+====================
+
+a - b
+
+---
+
+(source_file
+  (addition_expression
+    (identifier)
+    (identifier)))
+
+====================
+Multiplication
+; https://spec.groq.dev/GROQ-1.revision4/#sec-Binary-star-operator
+====================
+
+a * b
+
+---
+
+(source_file
+  (multiplication_expression
+    (identifier)
+    (identifier)))
+
+====================
+Division
+; https://spec.groq.dev/GROQ-1.revision4/#sec-Binary-slash-operator
+====================
+
+a / b
+
+---
+
+(source_file
+  (multiplication_expression
+    (identifier)
+    (identifier)))
+
+====================
+Modulo
+; https://spec.groq.dev/GROQ-1.revision4/#sec-Binary-percent-operator
+====================
+
+a % b
+
+---
+
+(source_file
+  (multiplication_expression
+    (identifier)
+    (identifier)))
+
+====================
+Exponentiation
+; https://spec.groq.dev/GROQ-1.revision4/#sec-Binary-double-star-operator
+====================
+
+a ** b
+
+---
+
+(source_file
+  (exponentiation_expression
+    (identifier)
+    (identifier)))
+
+====================
+Unary minus
+; https://spec.groq.dev/GROQ-1.revision4/#sec-Unary-minus-operator
+====================
+
+-x
+
+---
+
+(source_file
+  (unary_minus_expression
+    (identifier)))
+
+====================
+Unary plus
+; https://spec.groq.dev/GROQ-1.revision4/#sec-Unary-plus-operator
+====================
+
++x
+
+---
+
+(source_file
+  (unary_plus_expression
+    (identifier)))
+
+====================
+asc as postfix operator at comparison level
+; https://spec.groq.dev/GROQ-1.revision4/#sec-Asc-operator
+; https://spec.groq.dev/GROQ-1.revision4/#sec-Precedence-and-associativity
+; x + 1 asc => (x + 1) asc since asc (4) < + (6)
+====================
+
+x + 1 asc
+
+---
+
+(source_file
+  (asc_expression
+    (addition_expression
+      (identifier)
+      (number))))
+
+====================
+desc as postfix operator at comparison level
+; https://spec.groq.dev/GROQ-1.revision4/#sec-Desc-operator
+====================
+
+x + 1 desc
+
+---
+
+(source_file
+  (desc_expression
+    (addition_expression
+      (identifier)
+      (number))))
+
+====================
+Inclusive range with in operator
+; https://spec.groq.dev/GROQ-1.revision4/#sec-In-operator
+; x in 1..10 => x in (1..10)
+====================
+
+x in 1..10
+
+---
+
+(source_file
+  (comparison_expression
+    (identifier)
+    (range_expression
+      (number)
+      (number))))
+
+====================
+Exclusive range with in operator
+; https://spec.groq.dev/GROQ-1.revision4/#sec-In-operator
+====================
+
+x in 0...5
+
+---
+
+(source_file
+  (comparison_expression
+    (identifier)
+    (range_expression
+      (number)
+      (number))))
+
+====================
+Multiplication binds tighter than addition
+; https://spec.groq.dev/GROQ-1.revision4/#sec-Precedence-and-associativity
+====================
+
+a + b * c
+
+---
+
+(source_file
+  (addition_expression
+    (identifier)
+    (multiplication_expression
+      (identifier)
+      (identifier))))
+
+====================
+AND binds tighter than OR
+; https://spec.groq.dev/GROQ-1.revision4/#sec-Precedence-and-associativity
+====================
+
+a || b && c
+
+---
+
+(source_file
+  (or_expression
+    (identifier)
+    (and_expression
+      (identifier)
+      (identifier))))
+
+====================
+Right-associative exponentiation
+; https://spec.groq.dev/GROQ-1.revision4/#sec-Precedence-and-associativity
+====================
+
+a ** b ** c
+
+---
+
+(source_file
+  (exponentiation_expression
+    (identifier)
+    (exponentiation_expression
+      (identifier)
+      (identifier))))
+
+====================
+All comparison ops at same precedence level
+; https://spec.groq.dev/GROQ-1.revision4/#sec-Precedence-and-associativity
+; Level 4, non-associative: == != > >= < <= in match
+; tree-sitter lacks non-associative support
+; so we use left-associative fallback: a == b < c => (a == b) < c
+====================
+
+a == b < c
+
+---
+
+(source_file
+  (comparison_expression
+    (comparison_expression
+      (identifier)
+      (identifier))
+    (identifier)))
+
+====================
+in and match at same level as ==
+; https://spec.groq.dev/GROQ-1.revision4/#sec-Precedence-and-associativity
+; a in b == true => (a in b) == true
+====================
+
+a in b == true
+
+---
+
+(source_file
+  (comparison_expression
+    (comparison_expression
+      (identifier)
+      (identifier))
+    (true)))
+
+====================
+! binds tighter than **
+; https://spec.groq.dev/GROQ-1.revision4/#sec-Precedence-and-associativity
+; Level 10 prefix: +, !
+; Level 9 right-assoc: **
+; !a ** b => (!a) ** b
+====================
+
+!a ** b
+
+---
+
+(source_file
+  (exponentiation_expression
+    (not_expression
+      (identifier))
+    (identifier)))
+
+====================
+Unary + binds tighter than **
+; https://spec.groq.dev/GROQ-1.revision4/#sec-Precedence-and-associativity
+; +a ** b => (+a) ** b
+====================
+
++a ** b
+
+---
+
+(source_file
+  (exponentiation_expression
+    (unary_plus_expression
+      (identifier))
+    (identifier)))
+
+====================
+Unary - binds looser than **
+; https://spec.groq.dev/GROQ-1.revision4/#sec-Precedence-and-associativity
+; Level 8 prefix: -
+; -a ** b => -(a ** b)
+====================
+
+-a ** b
+
+---
+
+(source_file
+  (unary_minus_expression
+    (exponentiation_expression
+      (identifier)
+      (identifier))))
+
+====================
+Pair (=>) at lowest precedence, below ||
+; https://spec.groq.dev/GROQ-1.revision4/#sec-Precedence-and-associativity
+; https://spec.groq.dev/GROQ-1.revision4/#sec-Pair
+; a || b => c || d => (a || b) => (c || d)
+====================
+
+a || b => c || d
+
+---
+
+(source_file
+  (pair
+    (or_expression
+      (identifier)
+      (identifier))
+    (or_expression
+      (identifier)
+      (identifier))))

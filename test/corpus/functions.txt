@@ -1,5 +1,8 @@
+; https://spec.groq.dev/GROQ-1.revision4/
+
 ====================
 Simple function call
+; https://spec.groq.dev/GROQ-1.revision4/#sec-Function-call-expression
 ====================
 
 count(items)
@@ -13,6 +16,7 @@ count(items)
 
 ====================
 Function with no arguments
+; https://spec.groq.dev/GROQ-1.revision4/#sec-Function-call-expression
 ====================
 
 now()
@@ -25,6 +29,7 @@ now()
 
 ====================
 Function with multiple arguments
+; https://spec.groq.dev/GROQ-1.revision4/#sec-Function-call-expression
 ====================
 
 coalesce(a, b, c)
@@ -40,6 +45,7 @@ coalesce(a, b, c)
 
 ====================
 Namespaced function
+; https://spec.groq.dev/GROQ-1.revision4/#sec-Function-call-expression
 ====================
 
 array::join(tags, ", ")
@@ -56,6 +62,7 @@ array::join(tags, ", ")
 
 ====================
 Nested function call
+; https://spec.groq.dev/GROQ-1.revision4/#sec-Function-call-expression
 ====================
 
 dateTime(now())
@@ -70,6 +77,7 @@ dateTime(now())
 
 ====================
 Math namespace
+; https://spec.groq.dev/GROQ-1.revision4/#sec-Function-call-expression
 ====================
 
 math::sum(prices)
@@ -84,7 +92,9 @@ math::sum(prices)
     (identifier)))
 
 ====================
-Select with pairs
+select() with condition-value pairs
+; https://spec.groq.dev/GROQ-1.revision4/#sec-Function-call-expression
+; https://spec.groq.dev/GROQ-1.revision4/#sec-Pair
 ====================
 
 select(popularity > 20 => "high", popularity > 10 => "medium", "low")
@@ -105,3 +115,46 @@ select(popularity > 20 => "high", popularity > 10 => "medium", "low")
         (number))
       (string))
     (string)))
+
+====================
+fn declaration with namespace
+; https://spec.groq.dev/GROQ-1.revision4/#sec-Function-Definition
+====================
+
+fn custom::double(x) = x * 2;
+*
+
+---
+
+(source_file
+  (function_declaration
+    name: (namespaced_identifier
+      namespace: (identifier)
+      name: (identifier))
+    (identifier)
+    body: (multiplication_expression
+      (identifier)
+      (number)))
+  (everything))
+
+====================
+fn declaration with multiple parameters
+; https://spec.groq.dev/GROQ-1.revision4/#sec-Function-Definition
+====================
+
+fn math::add(a, b) = a + b;
+*
+
+---
+
+(source_file
+  (function_declaration
+    name: (namespaced_identifier
+      namespace: (identifier)
+      name: (identifier))
+    (identifier)
+    (identifier)
+    body: (addition_expression
+      (identifier)
+      (identifier)))
+  (everything))

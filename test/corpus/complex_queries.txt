@@ -1,3 +1,5 @@
+; https://spec.groq.dev/GROQ-1.revision4/
+
 ====================
 Filter with projection and nested dereference
 ====================
@@ -11,7 +13,7 @@ Filter with projection and nested dereference
     (postfix_expression
       (everything)
       (subscript
-        (equality_expression
+        (comparison_expression
           (identifier)
           (string))))
     (projection
@@ -37,7 +39,7 @@ Nested query with parent reference
     (postfix_expression
       (everything)
       (subscript
-        (equality_expression
+        (comparison_expression
           (identifier)
           (string))))
     (projection
@@ -49,7 +51,7 @@ Nested query with parent reference
             (everything)
             (subscript
               (and_expression
-                (equality_expression
+                (comparison_expression
                   (identifier)
                   (string))
                 (function_call
@@ -75,19 +77,20 @@ Order with slice and function
       (postfix_expression
         (everything)
         (subscript
-          (equality_expression
+          (comparison_expression
             (identifier)
             (string))))
       (pipe_call
         (function_call
           name: (identifier)
-          (sort_expression
+          (asc_expression
             (function_call
               name: (identifier)
               (identifier))))))
     (subscript
-      (number)
-      (number))))
+      (range_expression
+        (number)
+        (number)))))
 
 ====================
 Complex filter with multiple conditions and functions
@@ -104,7 +107,7 @@ Complex filter with multiple conditions and functions
       (and_expression
         (and_expression
           (and_expression
-            (equality_expression
+            (comparison_expression
               (identifier)
               (string))
             (comparison_expression
@@ -159,16 +162,17 @@ Using parameters in slice
       (postfix_expression
         (everything)
         (subscript
-          (equality_expression
+          (comparison_expression
             (identifier)
             (string))))
       (pipe_call
         (function_call
           name: (identifier)
-          (sort_expression
+          (asc_expression
             (identifier)))))
     (subscript
-      (parameter
-        (identifier))
-      (parameter
-        (identifier)))))
+      (range_expression
+        (parameter
+          (identifier))
+        (parameter
+          (identifier))))))

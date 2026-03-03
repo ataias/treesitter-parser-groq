@@ -1,3 +1,5 @@
+; https://spec.groq.dev/GROQ-1.revision4/#sec-Pipe-functions
+
 ====================
 Pipe with order
 ====================
@@ -11,13 +13,13 @@ Pipe with order
     (postfix_expression
       (everything)
       (subscript
-        (equality_expression
+        (comparison_expression
           (identifier)
           (string))))
     (pipe_call
       (function_call
         name: (identifier)
-        (sort_expression
+        (asc_expression
           (identifier))))))
 
 ====================
@@ -34,18 +36,18 @@ Chained pipes
       (postfix_expression
         (everything)
         (subscript
-          (equality_expression
+          (comparison_expression
             (identifier)
             (string))))
       (pipe_call
         (function_call
           name: (identifier)
-          (sort_expression
+          (desc_expression
             (identifier)))))
     (pipe_call
       (function_call
         name: (identifier)
-        (sort_expression
+        (asc_expression
           (identifier))))))
 
 ====================
@@ -61,12 +63,12 @@ Pipe with score
     (postfix_expression
       (everything)
       (subscript
-        (equality_expression
+        (comparison_expression
           (identifier)
           (string))))
     (pipe_call
       (function_call
         name: (identifier)
-        (match_expression
+        (comparison_expression
           (identifier)
           (string))))))

@@ -2,8 +2,7 @@
 (null) @constant.builtin
 (true) @boolean
 (false) @boolean
-["in" "match" "asc" "desc"] @keyword
-"function" @keyword
+["in" "match" "asc" "desc" "fn"] @keyword
 
 ;; Literals
 (number) @number
@@ -33,17 +32,17 @@
   name: (namespaced_identifier
     namespace: (identifier) @function
     name: (identifier) @function))
-(function_declaration "function" @keyword)
+(function_declaration "fn" @keyword)
 (function_declaration
-  name: (identifier) @function)
-(function_declaration
-  name: (namespaced_identifier) @function)
+  name: (namespaced_identifier
+    namespace: (identifier) @function
+    name: (identifier) @function))
 
 ;; Operators
 ["==" "!=" "<" "<=" ">" ">="] @operator
 ["+" "-" "/" "%" "**"] @operator
 ["&&" "||" "!"] @operator
-["=>" "->"] @operator
+["=>" "->" "="] @operator
 [".." "..."] @operator
 "|" @operator
 

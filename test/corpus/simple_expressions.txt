@@ -1,0 +1,74 @@
+; https://spec.groq.dev/GROQ-1.revision4/
+
+====================
+Everything
+; https://spec.groq.dev/GROQ-1.revision4/#sec-Everything-expression
+====================
+
+*
+
+---
+
+(source_file
+  (everything))
+
+====================
+This expression
+; https://spec.groq.dev/GROQ-1.revision4/#sec-This-expression
+====================
+
+@
+
+---
+
+(source_file
+  (this))
+
+====================
+Parent expression
+; https://spec.groq.dev/GROQ-1.revision4/#sec-Parent-expression
+====================
+
+^
+
+---
+
+(source_file
+  (parent))
+
+====================
+Nested parent
+; https://spec.groq.dev/GROQ-1.revision4/#sec-Parent-expression
+====================
+
+^.^.^
+
+---
+
+(source_file
+  (parent))
+
+====================
+Parameter
+; https://spec.groq.dev/GROQ-1.revision4/#sec-Parameter-expression
+====================
+
+$type
+
+---
+
+(source_file
+  (parameter
+    (identifier)))
+
+====================
+Bare identifier
+; https://spec.groq.dev/GROQ-1.revision4/#sec-This-attribute-expression
+====================
+
+title
+
+---
+
+(source_file
+  (identifier))

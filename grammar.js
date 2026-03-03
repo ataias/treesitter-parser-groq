@@ -1,18 +1,27 @@
 /// <reference types="tree-sitter-cli/dsl" />
 // @ts-check
 
+// Precedence levels from the GROQ-1.revision4 spec:
+// https://spec.groq.dev/GROQ-1.revision4/#sec-Precedence-and-associativity
 const PREC = {
-  OR: 1,
-  AND: 2,
-  IN_MATCH: 3,
-  COMPARE: 4,
-  EQUALITY: 5,
-  ADD: 6,
-  MUL: 7,
-  UNARY: 8,
-  EXP: 9,
-  POSTFIX: 10,
-  PIPE: 11,
+  PAIR: 1, // =>
+  OR: 2, // ||
+  AND: 3, // &&
+  // GROQ spec: comparison operators are non-associative at level 4.
+  // https://spec.groq.dev/GROQ-1.revision4/#sec-Precedence-and-associativity
+  // tree-sitter lacks non-associative support:
+  // https://github.com/tree-sitter/tree-sitter/issues/761
+  // We use prec.left as a pragmatic fallback. This means the parser accepts
+  // `a == b < c` (parsing left-to-right) rather than rejecting it.
+  // This does not affect syntax highlighting or formatting.
+  COMPARE: 4, // ==, !=, <, <=, >, >=, in, match, asc, desc
+  RANGE: 5, // .., ...
+  ADD: 6, // +, -
+  MUL: 7, // *, /, %
+  UNARY_MINUS: 8, // - (prefix)
+  EXP: 9, // **
+  UNARY_HIGH: 10, // +, ! (prefix)
+  POSTFIX: 11, // traversals, pipes
 };
 
 export default grammar({
@@ -30,20 +39,24 @@ export default grammar({
 
     _expression: ($) =>
       choice(
+        $.pair,
         $.or_expression,
         $.and_expression,
         $.not_expression,
-        $.in_expression,
-        $.match_expression,
         $.comparison_expression,
-        $.equality_expression,
+        $.asc_expression,
+        $.desc_expression,
+        $.range_expression,
         $.addition_expression,
         $.multiplication_expression,
-        $.unary_expression,
+        $.unary_minus_expression,
         $.exponentiation_expression,
+        $.unary_plus_expression,
         $.postfix_expression,
         $._primary_expression,
       ),
+
+    pair: ($) => prec.left(PREC.PAIR, seq($._expression, "=>", $._expression)),
 
     or_expression: ($) =>
       prec.left(PREC.OR, seq($._expression, "||", $._expression)),
@@ -51,32 +64,29 @@ export default grammar({
     and_expression: ($) =>
       prec.left(PREC.AND, seq($._expression, "&&", $._expression)),
 
-    not_expression: ($) => prec.right(PREC.UNARY, seq("!", $._expression)),
-
-    in_expression: ($) =>
-      prec.left(PREC.IN_MATCH, seq($._expression, "in", $._expression)),
-
-    match_expression: ($) =>
-      prec.left(PREC.IN_MATCH, seq($._expression, "match", $._expression)),
+    not_expression: ($) => prec.right(PREC.UNARY_HIGH, seq("!", $._expression)),
 
     comparison_expression: ($) =>
       prec.left(
         PREC.COMPARE,
         seq(
           $._expression,
-          field("operator", choice("<", "<=", ">", ">=")),
+          field(
+            "operator",
+            choice("==", "!=", "<", "<=", ">", ">=", "in", "match"),
+          ),
           $._expression,
         ),
       ),
 
-    equality_expression: ($) =>
+    asc_expression: ($) => prec.left(PREC.COMPARE, seq($._expression, "asc")),
+
+    desc_expression: ($) => prec.left(PREC.COMPARE, seq($._expression, "desc")),
+
+    range_expression: ($) =>
       prec.left(
-        PREC.EQUALITY,
-        seq(
-          $._expression,
-          field("operator", choice("==", "!=")),
-          $._expression,
-        ),
+        PREC.RANGE,
+        seq($._expression, choice("..", "..."), $._expression),
       ),
 
     addition_expression: ($) =>
@@ -95,11 +105,14 @@ export default grammar({
         ),
       ),
 
-    unary_expression: ($) =>
-      prec.right(PREC.UNARY, seq(choice("+", "-"), $._expression)),
+    unary_minus_expression: ($) =>
+      prec.right(PREC.UNARY_MINUS, seq("-", $._expression)),
 
     exponentiation_expression: ($) =>
       prec.right(PREC.EXP, seq($._expression, "**", $._expression)),
+
+    unary_plus_expression: ($) =>
+      prec.right(PREC.UNARY_HIGH, seq("+", $._expression)),
 
     postfix_expression: ($) =>
       prec.left(
@@ -119,20 +132,13 @@ export default grammar({
 
     attribute_access: ($) => seq(".", $.identifier),
 
-    subscript: ($) =>
-      seq(
-        "[",
-        choice(
-          seq($._expression, choice("..", "..."), $._expression),
-          $._expression,
-        ),
-        "]",
-      ),
+    subscript: ($) => seq("[", $._expression, "]"),
 
     array_postfix: () => seq("[", "]"),
 
     projection: ($) =>
       seq(
+        optional("|"),
         "{",
         optional(
           seq(
@@ -144,15 +150,12 @@ export default grammar({
         "}",
       ),
 
-    _projection_entry: ($) =>
-      choice($.spread, $.pair, $.alias_entry, $._expression),
+    _projection_entry: ($) => choice($.spread, $.alias_entry, $._expression),
 
     alias_entry: ($) =>
       seq(field("key", $._expression), ":", field("value", $._expression)),
 
     spread: ($) => seq("...", optional($._expression)),
-
-    pair: ($) => seq($._expression, "=>", $._expression),
 
     dereference: ($) =>
       prec.left(PREC.POSTFIX, seq("->", optional($.identifier))),
@@ -192,13 +195,7 @@ export default grammar({
           field("name", choice($.namespaced_identifier, $.identifier)),
           "(",
           optional(
-            seq(
-              choice($.sort_expression, $.pair, $._expression),
-              repeat(
-                seq(",", choice($.sort_expression, $.pair, $._expression)),
-              ),
-              optional(","),
-            ),
+            seq($._expression, repeat(seq(",", $._expression)), optional(",")),
           ),
           ")",
         ),
@@ -207,18 +204,18 @@ export default grammar({
     namespaced_identifier: ($) =>
       seq(field("namespace", $.identifier), "::", field("name", $.identifier)),
 
-    sort_expression: ($) =>
-      prec(PREC.POSTFIX, seq($._expression, choice("asc", "desc"))),
-
+    // https://spec.groq.dev/GROQ-1.revision4/#sec-Function-Definition
+    // FuncDecl : fn FuncNamespace FuncIdentifier FuncParams = FuncBody ;
     function_declaration: ($) =>
       seq(
-        "function",
-        field("name", choice($.namespaced_identifier, $.identifier)),
+        "fn",
+        field("name", $.namespaced_identifier),
         "(",
-        optional(seq($.parameter, repeat(seq(",", $.parameter)))),
+        optional(seq($.identifier, repeat(seq(",", $.identifier)))),
         ")",
-        "=>",
+        "=",
         field("body", $._expression),
+        ";",
       ),
 
     null: () => "null",

@@ -1,3 +1,5 @@
+; https://spec.groq.dev/GROQ-1.revision4/#sec-Comments
+
 ====================
 Line comment
 ====================
@@ -23,7 +25,7 @@ Inline comment
   (postfix_expression
     (everything)
     (subscript
-      (equality_expression
+      (comparison_expression
         (identifier)
         (string))))
   (comment))
